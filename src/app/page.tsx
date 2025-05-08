@@ -12,6 +12,7 @@ import Header from "@/components/layout/Header";
 import StatusPanel from "@/components/status/StatusPanel";
 import { ErrorBoundary } from "react-error-boundary";
 import type { FallbackProps } from "react-error-boundary";
+import PersonalNumberStatusList from "@/components/status/PersonalNumberStatusList";
 
 function ErrorFallback({ error, resetErrorBoundary }: FallbackProps) {
   return (
@@ -39,6 +40,14 @@ function MainContent() {
     login(user);
   };
 
+  // Example predefined list of personal numbers
+  const predefinedPersonalNumbers = [
+    "199001011234",
+    "198502025678",
+    "200003039012",
+    "197012121212",
+  ];
+
   if (isLoggedIn && wpUser) {
     return (
       <div className="text-center p-4">
@@ -64,13 +73,18 @@ function MainContent() {
               onLoginSuccess={handleLoginSuccess} // Pass the callback here
             />
           </div>
-          <div className="text-center">
+          <div className="text-center mt-8">
             <button
               onClick={() => setShowStatus(true)}
               className="text-sm text-gray-600 hover:text-gray-800 underline transition-colors duration-200"
             >
               Check System Status
             </button>
+          </div>
+          <div className="mt-8">
+            <PersonalNumberStatusList
+              personalNumbers={predefinedPersonalNumbers}
+            />
           </div>
         </>
       )}

@@ -9,7 +9,6 @@ import { QRCodeDisplay } from "@/components/bankid/QRCodeDisplay";
 import { StatusLog } from "@/components/bankid/StatusLog";
 import { SignStatus, BankIDUser, ParentMessage } from "@/types/bankid";
 import { bankIDService } from "@/lib/bankid";
-// Import the exported type from your context:
 import { WordPressUser } from "@/context/WordPressContext";
 
 interface BankIDFlowProps {
@@ -17,10 +16,7 @@ interface BankIDFlowProps {
   onLoginSuccess?: (user: WordPressUser) => void;
 }
 
-export default function BankIDFlow({
-  onError,
-  onLoginSuccess,
-}: BankIDFlowProps) {
+export default function BankIDFlow({ onError }: BankIDFlowProps) {
   // States
   const [status, setStatus] = useState<SignStatus>("initiating");
   const [qrRefreshKey, setQrRefreshKey] = useState<number>(Date.now());
@@ -77,27 +73,23 @@ export default function BankIDFlow({
   const handleSuccessfulLogin = useCallback(
     async (user: BankIDUser) => {
       try {
-        addLog("WordPress login successful, preparing redirect...");
+        addLog(
+          "BankID login complete, notifying parent for first-party login..."
+        );
         notifyParent("BANKID_LOGIN_SUCCESS", {
           personalNumber: user.personalNumber,
           name: user.name,
-          redirect: "/",
+          redirect:
+            "https://rev.brfbygatan.se/process-bankid-login/?personal_number=" +
+            encodeURIComponent(user.personalNumber),
         });
-        if (onLoginSuccess) {
-          // Pass the user data to the parent callback (casting to WordPressUser if the types match)
-          onLoginSuccess({
-            display_name: user.name,
-            personal_number: user.personalNumber,
-          });
-        }
         setLoginComplete(true);
       } catch (err) {
         handleError(err);
       }
     },
-    [addLog, notifyParent, handleError, onLoginSuccess]
+    [addLog, notifyParent, handleError]
   );
-
   // WordPress integration
   const handleWordPressIntegration = useCallback(
     async (user: BankIDUser) => {

@@ -10,7 +10,7 @@ const nextConfig = {
     return [
       {
         source: "/api/:path*",
-        destination: "http://localtest.local/wp-json/bankid/v1/:path*", // Proxy to WordPress API
+        destination: "https://rev.brfbygatan.se/wp-json/bankid/v1/:path*", // Proxy to WordPress API
       },
     ];
   },
